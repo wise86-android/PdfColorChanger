@@ -9,13 +9,21 @@ fun main() {
     page.contentStreams.forEach { stream ->
         val data = stream.toByteArray()
         val str = String(data)
+        str.split('\n').forEach { line ->
+            if(line.isColorLine){
+                println(line.toRgbColor)
+            }
+        }
+        /*
         val newStr = str.replace("0.73333 0.8 0 rg","0 0 0 rg")
             .replace("0.22353 0.66275 0.86275 rg","0 0 0 rg")
 
         val new = stream.createOutputStream()
         new.write(newStr.toByteArray())
         new.close()
+
+         */
     }
 
-    document.save("./changeColor.pdf")
+    //document.save("./changeColor.pdf")
 }

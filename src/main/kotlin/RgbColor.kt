@@ -9,6 +9,10 @@ data class RgbColor(val red:Float, var green:Float, val blue:Float) {
     val greenByte:UByte = (green * 255.0f).toByte().toUByte()
     val blueByte:UByte = (blue * 255.0f).toByte().toUByte()
 
+    override fun toString(): String {
+        return "RgbColor: (r:$redByte,g:$greenByte,b:$blueByte)/(r:$red,g:$green,b:$blue)"
+    }
+
 }
 
 private val Int.redComponent:UByte
