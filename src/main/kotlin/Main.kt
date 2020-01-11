@@ -1,8 +1,5 @@
 import org.apache.pdfbox.pdmodel.PDDocument
 import org.apache.pdfbox.pdmodel.PDPage
-import org.apache.pdfbox.pdmodel.PDPageContentStream
-import org.apache.pdfbox.pdmodel.font.PDFont
-import org.apache.pdfbox.pdmodel.font.PDType1Font
 import java.io.File
 
 
@@ -21,16 +18,4 @@ fun main() {
     }
 
     document.save("./changeColor.pdf")
-
-    /*
-    val contentStream = PDPageContentStream(document, page)
-    page.contentStreams
-    contentStream.beginText()
-    contentStream.setFont(font, 12f)
-    contentStream.moveTextPositionByAmount(100f, 100f)
-    contentStream.drawString("Hello")
-    contentStream.endText()
-    contentStream.close()
-    document.save("/x/x/x/mypdf.pdf")
-    document.close()*/
 }
