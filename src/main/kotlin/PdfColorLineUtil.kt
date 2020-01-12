@@ -1,4 +1,4 @@
-import com.sun.org.apache.xpath.internal.operations.Bool
+import java.text.DecimalFormat
 import java.util.regex.Pattern
 
 private const val normalizerFloatRegExp = "(1|0.?\\d*)"
@@ -19,3 +19,12 @@ get() {
         null
     }
 }
+
+private val floatFormatter = DecimalFormat("#.#####")
+internal val RgbColor.toColorLine: CharSequence
+    get(){
+        return String.format("%s %s %s rg",
+            floatFormatter.format(red),
+            floatFormatter.format(green),
+            floatFormatter.format(blue))
+    }
