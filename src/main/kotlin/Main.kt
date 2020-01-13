@@ -29,7 +29,11 @@ fun changeColors(data:CharSequence, colorMapping:Map<RgbColor,RgbColor>):Substit
         SubstitutionResultStat(foundColors.size.toUInt(),unknownColors.toList()))
 }
 
+
 fun main() {
+
+    //File("dasd").walk().filter { it.extension == "pdf" }
+
     val document = PDDocument.load(File("./SearchButton.pdf"))
     val page = document.documentCatalog.pages.get(0) as PDPage
     page.contentStreams.forEach { stream ->
