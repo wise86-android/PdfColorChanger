@@ -27,5 +27,12 @@ internal class RgbColorTest{
         assertEquals(0xCD.toUByte(),color.blueByte)
     }
 
+    @Test
+    fun theByteRepresentationIsUsedForEquals(){
+        val color = RgbColor(0.toUByte(),0.toUByte(),0.toUByte())
+        val similarColor = RgbColor(0.001f,0.0001f,0.00001f)
+        assertEquals(color,similarColor)
+        assertEquals(color.hashCode(),similarColor.hashCode())
+    }
 
 }

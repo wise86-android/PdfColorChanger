@@ -13,6 +13,27 @@ data class RgbColor(val red:Float, var green:Float, val blue:Float) {
         return "RgbColor: (red=$redByte,green=$greenByte,blue:$blueByte)/(red:$red,green:$green,blue:$blue)"
     }
 
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as RgbColor
+
+        if (redByte != other.redByte) return false
+        if (greenByte != other.greenByte) return false
+        if (blueByte != other.blueByte) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = redByte.hashCode()
+        result = 31 * result + greenByte.hashCode()
+        result = 31 * result + blueByte.hashCode()
+        return result
+    }
+
+
 }
 
 private val Int.redComponent:UByte

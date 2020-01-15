@@ -1,3 +1,4 @@
+import com.sun.xml.internal.fastinfoset.util.StringArray
 import org.apache.pdfbox.pdmodel.PDDocument
 import org.apache.pdfbox.pdmodel.PDPage
 import java.io.File
@@ -29,34 +30,69 @@ fun changeColors(data:CharSequence, colorMapping:Map<RgbColor,RgbColor>):Substit
         SubstitutionResultStat(foundColors.size.toUInt(),unknownColors.toList()))
 }
 
+fun getAllPdfFileFrom(directory:File): Sequence<File> {
+    return directory.walk().filter { it.extension == "pdf" }
+}
 
-fun main() {
-
-    //File("dasd").walk().filter { it.extension == "pdf" }
-
-    val document = PDDocument.load(File("./SearchButton.pdf"))
-    val page = document.documentCatalog.pages.get(0) as PDPage
+fun PDDocument.changeColor(colorMapping:Map<RgbColor,RgbColor>):SubstitutionResultStat{
+    val page = documentCatalog.pages.get(0) as PDPage
+    var allStat = SubstitutionResultStat(0u, emptyList())
     page.contentStreams.forEach { stream ->
         val data = stream.toByteArray()
         val str = String(data)
 
-        val colorMapping = mapOf(
-            RgbColor(red = 0.22353f,green = 0.66275f,blue = 0.86275f) to RgbColor(red = 0.0f,green = 1.0f,blue = 1.0f)
-        )
-
         val (newStr,stat) = changeColors(str,colorMapping)
-
+        allStat += stat
         val new = stream.createOutputStream()
         new.write(newStr.toByteArray())
         new.close()
 
-        println("Image colors: ${stat.imageColors}")
-        println("Unknown colors: ${stat.unknownColor.size}")
-        if(stat.unknownColor.isNotEmpty()){
-            println(stat.unknownColor.joinToString(separator = "\n\t",prefix = "\t"))
-        }
+    }
+    return allStat
+}
 
+fun changeColors(inputDir:File,colorMapping:Map<RgbColor,RgbColor>, outputDir:File) {
+    getAllPdfFileFrom(inputDir).forEach { pdfFile ->
+        val document = PDDocument.load(pdfFile)
+        val stat = document.changeColor(colorMapping)
+        println("File ${pdfFile.name}")
+        println("\tImage colors: ${stat.imageColors}")
+        println("\tUnknown colors: ${stat.unknownColor.size}")
+        if(stat.unknownColor.isNotEmpty()){
+            println(stat.unknownColor.joinToString(separator = "\n\t",prefix = "\t\t"))
+        }
+        //file path starting from inputDir
+        val relativePath = inputDir.toPath().relativize(pdfFile.toPath())
+        // outputPath + currentFile path
+        val outputPath = outputDir.toPath().resolve(relativePath)
+        //create destination dir
+        outputPath.parent.toFile().mkdirs()
+        //write the new file with changed color
+        document.save(outputPath.toFile())
+    }
+}
+
+
+fun main(args: Array<String>) {
+    if(args.size!=3){
+        println("Usage: InputDir mappingFile outDir")
     }
 
-    document.save("./changeColor.pdf")
+    val inputDir = File(args[0])
+    val mappingFile = File(args[1])
+    val outputDir = File(args[2])
+
+    if(!inputDir.isDirectory){
+        print("${args[0]} must be a directory")
+        return
+    }
+
+    if(!outputDir.isDirectory){
+        print("${args[1]} must be a directory")
+        return
+    }
+
+    val mapping = loadColorMapperFrom(mappingFile)
+
+    changeColors(inputDir,mapping,outputDir)
 }
