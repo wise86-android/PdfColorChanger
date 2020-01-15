@@ -59,7 +59,7 @@ fun changeColors(inputDir:File,colorMapping:Map<RgbColor,RgbColor>, outputDir:Fi
         println("\tImage colors: ${stat.imageColors}")
         println("\tUnknown colors: ${stat.unknownColor.size}")
         if(stat.unknownColor.isNotEmpty()){
-            println(stat.unknownColor.joinToString(separator = "\n\t",prefix = "\t\t"))
+            println(stat.unknownColor.joinToString(separator = "\n\t\t",prefix = "\t\t"))
         }
         //file path starting from inputDir
         val relativePath = inputDir.toPath().relativize(pdfFile.toPath())
@@ -87,8 +87,13 @@ fun main(args: Array<String>) {
         return
     }
 
+    if(!mappingFile.exists()){
+        print("${args[1]} do not exist")
+        return
+    }
+
     if(!outputDir.isDirectory){
-        print("${args[1]} must be a directory")
+        print("${args[2]} must be a directory")
         return
     }
 

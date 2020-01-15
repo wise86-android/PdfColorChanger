@@ -1,11 +1,12 @@
 
 plugins {
     java
+    id("com.github.johnrengelman.shadow") version "5.2.0" 
     kotlin("jvm") version "1.3.61"
 }
 
-group = "org.example"
-version = "1.0-SNAPSHOT"
+group = "org.wise86."
+version = "1.0"
 
 repositories {
     mavenCentral()
@@ -28,6 +29,7 @@ tasks.withType<Test>().configureEach {
 configure<JavaPluginConvention> {
     sourceCompatibility = JavaVersion.VERSION_1_8
 }
+
 tasks {
     compileKotlin {
         kotlinOptions.jvmTarget = "1.8"
@@ -36,5 +38,11 @@ tasks {
     compileTestKotlin {
         kotlinOptions.jvmTarget = "1.8"
         kotlinOptions.freeCompilerArgs=listOf("-Xuse-experimental=kotlin.ExperimentalUnsignedTypes")
+    }
+}
+
+tasks.withType(Jar::class){
+    manifest{
+        attributes["Main-Class"] = "MainKt"
     }
 }
