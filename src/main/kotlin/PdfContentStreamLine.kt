@@ -3,14 +3,11 @@ data class PdfContentStreamLine internal constructor(private val prefix: String,
     companion object {
         fun buildFrom(rawLineContent: String): PdfContentStreamLine {
             val color = rawLineContent.toRgbColor
-            return if (color != null)
-                PdfContentStreamLine("", color)
-            else
-                PdfContentStreamLine(rawLineContent, null)
+            val colorAsString = color?.toColorLine.toString()
+            val prefix = rawLineContent.split(colorAsString).first()
+            return PdfContentStreamLine(prefix, color)
         }
-
     }
-
 
     fun containsColor(): Boolean {
         return this.color != null

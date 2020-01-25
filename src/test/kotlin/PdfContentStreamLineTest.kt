@@ -6,8 +6,8 @@ class PdfContentStreamLineTest {
 
     @Test
     fun buildNotColorLineFromString() {
-        val line = PdfContentStreamLine.buildFrom("not color line")
-        assertEquals(NOT_COLOR_LINE, line)
+        val actual = PdfContentStreamLine.buildFrom("not color line")
+        assertEquals(NOT_COLOR_LINE, actual)
     }
 
     @Test
@@ -28,8 +28,8 @@ class PdfContentStreamLineTest {
 
     @Test
     fun buildRedColorLineFromString() {
-        val redColorLine = PdfContentStreamLine.buildFrom("1 0 0 rg")
-        assertEquals(RED_COLOR_LINE, redColorLine)
+        val actual = PdfContentStreamLine.buildFrom("1 0 0 rg")
+        assertEquals(RED_COLOR_LINE, actual)
     }
 
     @Test
@@ -57,6 +57,13 @@ class PdfContentStreamLineTest {
     fun changeColorToNotColorLine() {
         val actual = NOT_COLOR_LINE.changeColor(RgbColor(0u, 0u, 0u))
         assertEquals(NOT_COLOR_LINE, actual)
+    }
+
+    @Test
+    fun buildColorLineWithPrefixFromString() {
+        val actual = PdfContentStreamLine.buildFrom("prefix 1 0 0 rg")
+        val expected = PdfContentStreamLine(prefix = "prefix ", color = RED_COLOR)
+        assertEquals(expected, actual)
     }
 
     @Disabled
