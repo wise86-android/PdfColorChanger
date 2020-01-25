@@ -1,11 +1,14 @@
-data class PdfContentStreamLine private constructor(private val prefix: String, private val color: RgbColor?) {
+data class PdfContentStreamLine internal constructor(private val prefix: String, private val color: RgbColor?) {
 
     companion object {
         fun buildFrom(rawLineContent: String): PdfContentStreamLine {
-            return PdfContentStreamLine(rawLineContent, rawLineContent.toRgbColor)
+            val color = rawLineContent.toRgbColor
+            return if (color != null)
+                PdfContentStreamLine("", color)
+            else
+                PdfContentStreamLine(rawLineContent, null)
         }
 
-        fun buildFrom(color: RgbColor) = buildFrom(color.toColorLine.toString())
     }
 
 
@@ -18,12 +21,15 @@ data class PdfContentStreamLine private constructor(private val prefix: String, 
     }
 
     override fun toString(): String {
-        return prefix
+        return if (this.color != null)
+            this.color.toColorLine.toString()
+        else
+            prefix
     }
 
     fun changeColor(newColor: RgbColor): PdfContentStreamLine {
         return if (this.containsColor())
-            buildFrom(newColor)
+            this.copy(color = newColor)
         else
             this.copy()
     }
