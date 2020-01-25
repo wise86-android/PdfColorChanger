@@ -24,10 +24,9 @@ data class PdfContentStreamLine internal constructor(
     }
 
     override fun toString(): String {
-        return if (this.color != null)
-            this.color.toColorLine.toString()
-        else
-            prefix
+        return prefix +
+                (this.color?.toColorLine?.toString() ?: "") +
+                suffix
     }
 
     fun changeColor(newColor: RgbColor): PdfContentStreamLine {

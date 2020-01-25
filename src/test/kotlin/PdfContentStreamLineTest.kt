@@ -84,6 +84,12 @@ class PdfContentStreamLineTest {
 
     }
 
+    @Test
+    fun mixedColorLineToString() {
+        val line = PdfContentStreamLine(prefix = "mixed ", color = RED_COLOR, suffix = " line")
+        assertEquals("mixed 1 0 0 rg line", line.toString())
+    }
+
     companion object {
         private val RED_COLOR = RgbColor(255u, 0u, 0u)
         private val BLUE_COLOR = RgbColor(0u, 0u, 255u)
