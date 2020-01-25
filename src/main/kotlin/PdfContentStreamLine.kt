@@ -1,11 +1,17 @@
-data class PdfContentStreamLine internal constructor(private val prefix: String, private val color: RgbColor?) {
+data class PdfContentStreamLine internal constructor(
+    private val prefix: String,
+    private val color: RgbColor?,
+    private val suffix: String
+) {
 
     companion object {
         fun buildFrom(rawLineContent: String): PdfContentStreamLine {
             val color = rawLineContent.toRgbColor
             val colorAsString = color?.toColorLine.toString()
-            val prefix = rawLineContent.split(colorAsString).first()
-            return PdfContentStreamLine(prefix, color)
+            val pieces = rawLineContent.split(colorAsString)
+            val prefix = pieces[0]
+            val suffix = pieces.getOrElse(1, { "" })
+            return PdfContentStreamLine(prefix, color, suffix)
         }
     }
 
