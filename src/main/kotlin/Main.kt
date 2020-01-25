@@ -1,4 +1,3 @@
-import com.sun.xml.internal.fastinfoset.util.StringArray
 import org.apache.pdfbox.pdmodel.PDDocument
 import org.apache.pdfbox.pdmodel.PDPage
 import java.io.File
@@ -76,6 +75,7 @@ fun changeColors(inputDir:File,colorMapping:Map<RgbColor,RgbColor>, outputDir:Fi
 fun main(args: Array<String>) {
     if(args.size!=3){
         println("Usage: InputDir mappingFile outDir")
+        return
     }
 
     val inputDir = File(args[0])
@@ -83,17 +83,17 @@ fun main(args: Array<String>) {
     val outputDir = File(args[2])
 
     if(!inputDir.isDirectory){
-        print("${args[0]} must be a directory")
+        println("${args[0]} must be a directory")
         return
     }
 
     if(!mappingFile.exists()){
-        print("${args[1]} do not exist")
+        println("${args[1]} do not exist")
         return
     }
 
     if(!outputDir.isDirectory){
-        print("${args[2]} must be a directory")
+        println("${args[2]} must be a directory")
         return
     }
 
