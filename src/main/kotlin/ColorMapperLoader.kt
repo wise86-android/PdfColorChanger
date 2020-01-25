@@ -2,7 +2,7 @@ import java.io.File
 import java.io.InputStream
 import java.lang.NumberFormatException
 import java.util.*
-
+//TODO ADD SUPPORT FOR COMMENT LINE, SKIP MALFORMED LINES
 @Throws(NumberFormatException::class)
 fun loadColorMapperFrom(input:InputStream):Map<RgbColor,RgbColor>{
     val inputScanner = Scanner(input)
