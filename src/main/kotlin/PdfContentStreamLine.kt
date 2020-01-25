@@ -10,7 +10,7 @@ data class PdfContentStreamLine internal constructor(
             val colorAsString = color?.toColorLine.toString()
             val pieces = rawLineContent.split(colorAsString)
             val prefix = pieces[0]
-            val suffix = pieces.getOrElse(1, { "" })
+            val suffix = pieces.getOrElse(1) { "" }
             return PdfContentStreamLine(prefix, color, suffix)
         }
     }
