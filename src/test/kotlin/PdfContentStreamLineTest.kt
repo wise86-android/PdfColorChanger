@@ -51,7 +51,7 @@ class PdfContentStreamLineTest {
     @Test
     fun buildColorLineWithPrefix() {
         val actual = PdfContentStreamLine.buildFrom("prefix 1 0 0 rg")
-        val expected = PdfContentStreamLine(prefix = "prefix ", color = RED_COLOR, suffix = "")
+        val expected = PdfContentStreamLine(prefix = "prefix ", color = RED_COLOR, suffix = " rg")
         assertEquals(expected, actual)
     }
 
@@ -59,7 +59,7 @@ class PdfContentStreamLineTest {
     fun buildMixedColorLine() {
         val actual = PdfContentStreamLine.buildFrom("mixed 1 0 0 rg line")
 
-        val expected = PdfContentStreamLine(prefix = "mixed ", color = RED_COLOR, suffix = " line")
+        val expected = PdfContentStreamLine(prefix = "mixed ", color = RED_COLOR, suffix = " rg line")
         assertEquals(expected, actual)
     }
 
@@ -76,15 +76,27 @@ class PdfContentStreamLineTest {
 
     @Test
     fun mixedColorLineToString() {
-        val line = PdfContentStreamLine(prefix = "mixed ", color = RED_COLOR, suffix = " line")
+        val line = PdfContentStreamLine(prefix = "mixed ", color = RED_COLOR, suffix = " rg line")
         assertEquals("mixed 1 0 0 rg line", line.toString())
+    }
+
+    @Test
+    fun buildColorLineWithDecimals() {
+        val actual = PdfContentStreamLine.buildFrom("0.1 0.5 1 rg")
+        assertEquals(PdfContentStreamLine(prefix = "", color = RgbColor(0.1f, 0.5f, 1f), suffix = " rg"), actual)
+    }
+
+    @Test
+    fun lineWithDecimalsToString() {
+        val line = PdfContentStreamLine(prefix = "", color = RgbColor(0.1f, 0.5f, 1f), suffix = " rg")
+        assertEquals("0.1 0.5 1 rg", line.toString())
     }
 
     companion object {
         private val RED_COLOR = RgbColor(1f, 0f, 0f)
         private val BLUE_COLOR = RgbColor(0f, 0f, 1f)
-        private val RED_COLOR_LINE = PdfContentStreamLine(prefix = "", color = RED_COLOR, suffix = "")
-        private val BLUE_COLOR_LINE = PdfContentStreamLine(prefix = "", color = BLUE_COLOR, suffix = "")
+        private val RED_COLOR_LINE = PdfContentStreamLine(prefix = "", color = RED_COLOR, suffix = " rg")
+        private val BLUE_COLOR_LINE = PdfContentStreamLine(prefix = "", color = BLUE_COLOR, suffix = " rg")
         private val NOT_COLOR_LINE = PdfContentStreamLine(prefix = "not color line", color = null, suffix = "")
     }
 }
