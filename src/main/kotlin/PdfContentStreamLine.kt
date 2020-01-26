@@ -15,25 +15,21 @@ data class PdfContentStreamLine internal constructor(
         }
     }
 
-    fun containsColor(): Boolean {
-        return this.color != null
-    }
-
     fun getColor(): RgbColor? {
         return this.color
+    }
+
+    fun changeColor(newColor: RgbColor): PdfContentStreamLine {
+        if (this.color == null)
+            return this.copy()
+
+        return this.copy(color = newColor)
     }
 
     override fun toString(): String {
         return prefix +
                 (this.color?.toColorLine?.toString() ?: "") +
                 suffix
-    }
-
-    fun changeColor(newColor: RgbColor): PdfContentStreamLine {
-        return if (this.containsColor())
-            this.copy(color = newColor)
-        else
-            this.copy()
     }
 
 }

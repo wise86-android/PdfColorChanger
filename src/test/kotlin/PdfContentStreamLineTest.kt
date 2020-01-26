@@ -1,4 +1,5 @@
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
 
 class PdfContentStreamLineTest {
@@ -20,12 +21,6 @@ class PdfContentStreamLineTest {
     }
 
     @Test
-    fun notColorLineDoNotContainsColor() {
-        assertFalse(NOT_COLOR_LINE.containsColor())
-    }
-
-
-    @Test
     fun buildRedColorLineFromString() {
         val actual = PdfContentStreamLine.buildFrom("1 0 0 rg")
         assertEquals(RED_COLOR_LINE, actual)
@@ -39,11 +34,6 @@ class PdfContentStreamLineTest {
     @Test
     fun redColorLineHasRedColor() {
         assertEquals(RED_COLOR, RED_COLOR_LINE.getColor())
-    }
-
-    @Test
-    fun redColorLineDoNotContainsColor() {
-        assertTrue(RED_COLOR_LINE.containsColor())
     }
 
     @Test
