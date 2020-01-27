@@ -2,47 +2,49 @@ import org.apache.pdfbox.pdmodel.PDDocument
 import org.apache.pdfbox.pdmodel.PDPage
 import java.io.File
 
-fun changeColors(data:CharSequence, colorMapping:Map<RgbColor,RgbColor>):SubstitutionResult{
+fun changeColors(data: CharSequence, colorMapping: Map<RgbColor, RgbColor>): SubstitutionResult {
     val out = StringBuilder(data.length)
     val foundColors = mutableSetOf<RgbColor>()
     val unknownColors = mutableSetOf<RgbColor>()
     data.lineSequence()
-        .forEach {line ->
+        .forEach { line ->
             val pdfLine = PdfContentStreamLine.buildFrom(line)
             val inColor = pdfLine.getColor()
-            if(inColor!=null){
+            if (inColor != null) {
                 foundColors.add(inColor)
                 val outColor = colorMapping[inColor]
-                if(outColor!=null) {
+                if (outColor != null) {
                     val newLine = pdfLine.changeColor(outColor)
                     out.append(newLine.toString())
-                }else{
+                } else {
                     unknownColors.add(inColor)
                     out.append(line) // no substitution
                 }
-            }else{
+            } else {
                 out.append(line)
             }
             out.append('\n')
         }
     val finalString = out.removeSuffix("\n").toString()
 
-    return Pair(finalString,
-        SubstitutionResultStat(foundColors.size.toUInt(),unknownColors.toList()))
+    return Pair(
+        finalString,
+        SubstitutionResultStat(foundColors.size.toUInt(), unknownColors.toList())
+    )
 }
 
-fun getAllPdfFileFrom(directory:File): Sequence<File> {
+fun getAllPdfFileFrom(directory: File): Sequence<File> {
     return directory.walk().filter { it.extension == "pdf" }
 }
 
-fun PDDocument.changeColor(colorMapping:Map<RgbColor,RgbColor>):SubstitutionResultStat{
+fun PDDocument.changeColor(colorMapping: Map<RgbColor, RgbColor>): SubstitutionResultStat {
     val page = documentCatalog.pages.get(0) as PDPage
     var allStat = SubstitutionResultStat(0u, emptyList())
     page.contentStreams.forEach { stream ->
         val data = stream.toByteArray()
         val str = String(data)
 
-        val (newStr,stat) = changeColors(str,colorMapping)
+        val (newStr, stat) = changeColors(str, colorMapping)
         allStat += stat
         val new = stream.createOutputStream()
         new.write(newStr.toByteArray())
@@ -52,15 +54,15 @@ fun PDDocument.changeColor(colorMapping:Map<RgbColor,RgbColor>):SubstitutionResu
     return allStat
 }
 
-fun changeColors(inputDir:File,colorMapping:Map<RgbColor,RgbColor>, outputDir:File) {
+fun changeColors(inputDir: File, colorMapping: Map<RgbColor, RgbColor>, outputDir: File) {
     getAllPdfFileFrom(inputDir).forEach { pdfFile ->
         val document = PDDocument.load(pdfFile)
         val stat = document.changeColor(colorMapping)
         println("File ${pdfFile.name}")
         println("\tImage colors: ${stat.imageColors}")
         println("\tUnknown colors: ${stat.unknownColor.size}")
-        if(stat.unknownColor.isNotEmpty()){
-            println(stat.unknownColor.joinToString(separator = "\n\t\t",prefix = "\t\t"))
+        if (stat.unknownColor.isNotEmpty()) {
+            println(stat.unknownColor.joinToString(separator = "\n\t\t", prefix = "\t\t"))
         }
         //file path starting from inputDir
         val relativePath = inputDir.toPath().relativize(pdfFile.toPath())
@@ -75,7 +77,7 @@ fun changeColors(inputDir:File,colorMapping:Map<RgbColor,RgbColor>, outputDir:Fi
 
 
 fun main(args: Array<String>) {
-    if(args.size!=3){
+    if (args.size != 3) {
         println("Usage: InputDir mappingFile outDir")
         return
     }
@@ -84,22 +86,22 @@ fun main(args: Array<String>) {
     val mappingFile = File(args[1])
     val outputDir = File(args[2])
 
-    if(!inputDir.isDirectory){
+    if (!inputDir.isDirectory) {
         println("${args[0]} must be a directory")
         return
     }
 
-    if(!mappingFile.exists()){
+    if (!mappingFile.exists()) {
         println("${args[1]} do not exist")
         return
     }
 
-    if(!outputDir.isDirectory){
+    if (!outputDir.isDirectory) {
         println("${args[2]} must be a directory")
         return
     }
 
     val mapping = loadColorMapperFrom(mappingFile)
 
-    changeColors(inputDir,mapping,outputDir)
+    changeColors(inputDir, mapping, outputDir)
 }

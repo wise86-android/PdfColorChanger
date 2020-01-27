@@ -65,18 +65,18 @@ class MainTest {
 
         main(arrayOf(inputFolderPath, inputMapFilePath, tempDir.path))
 
-        val outFile = File(tempDir,"input.pdf")
+        val outFile = File(tempDir, "input.pdf")
         assertTrue(outFile.exists())
 
         val document = PDDocument.load(outFile)
         val outData = String(document.getPage(0).contentStreams.asSequence().first().toByteArray()).lines()
 
-        assertEquals("1 1 1 rg /a0 gs",outData[2] )
-        assertEquals("0 0 1 RG 0.762505 w",outData[6])
-        assertEquals("0 1 0 rg BT",outData[21])
-        assertEquals("1 0 0 rg BT",outData[26])
-        assertEquals("0 0 1 rg BT",outData[31])
-        assertEquals("0 1 0 rg BT",outData[36])
+        assertEquals("1 1 1 rg /a0 gs", outData[2])
+        assertEquals("0 0 1 RG 0.762505 w", outData[6])
+        assertEquals("0 1 0 rg BT", outData[21])
+        assertEquals("1 0 0 rg BT", outData[26])
+        assertEquals("0 0 1 rg BT", outData[31])
+        assertEquals("0 1 0 rg BT", outData[36])
 
     }
 

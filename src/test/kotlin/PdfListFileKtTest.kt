@@ -6,7 +6,7 @@ import java.io.File
 internal class PdfListFileKtTest{
 
     @TempDir
-    lateinit var baseDir:File
+    lateinit var baseDir: File
 
     private fun createFile(parentDir: File, name: String):File{
         val file = File(parentDir, name)
