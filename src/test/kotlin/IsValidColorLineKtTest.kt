@@ -3,6 +3,9 @@ import org.junit.jupiter.api.Test
 
 internal class IsValidColorLineKtTest {
 
+    private val String.isColorLine: Boolean
+        get() = PdfContentStreamLine.buildFrom(this).getColor() != null
+
     @Test
     fun validLineIsDetected() {
         assertTrue("0.73333 0.8 0 rg".isColorLine)
@@ -19,6 +22,11 @@ internal class IsValidColorLineKtTest {
     @Test
     fun validLineTheNumberCanBeFloat() {
         assertTrue("0 0.12345 1 rg".isColorLine)
+    }
+
+    @Test
+    fun oneCanHaveOneDecimal() {
+        assertTrue("1 1.0 0 rg".isColorLine)
     }
 
     @Test

@@ -80,4 +80,21 @@ class MainTest {
 
     }
 
+    @Test
+    fun thePdfIsCreatedInSubFolders() {
+        val inputFolderPath = javaClass.getResource("input").file
+        val inputMapFilePath = javaClass.getResource("input/colorMapping.txt").file
+
+        main(arrayOf(inputFolderPath, inputMapFilePath, tempDir.path))
+
+        val outFile = File(tempDir, "folder/black.pdf")
+        assertTrue(outFile.exists())
+
+        val document = PDDocument.load(outFile)
+        val outData = String(document.getPage(0).contentStreams.asSequence().first().toByteArray()).lines()
+
+        assertEquals("0 1 0 rg /a0 gs", outData[2])
+
+    }
+
 }

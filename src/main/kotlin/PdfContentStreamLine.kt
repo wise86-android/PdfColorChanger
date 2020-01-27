@@ -9,12 +9,13 @@ data class PdfContentStreamLine internal constructor(
 
     companion object {
         fun buildFrom(rawLineContent: String): PdfContentStreamLine {
-            val colorLineMatcher = Pattern.compile("(.*?)([1|0]\\.?\\d*) ([1|0]\\.?\\d*) ([1|0]\\.?\\d*)(\\s[rg|RG].*)")
+            val floatMatch = "0\\.\\d+|0|1|1\\.0"
+            val colorLineMatcher = Pattern.compile("^(.*?\\s)?($floatMatch)\\s($floatMatch)\\s($floatMatch)(\\s[rg|RG].*)")
             val regexResult = colorLineMatcher.matcher(rawLineContent)
             if (!regexResult.find())
                 return PdfContentStreamLine(prefix = rawLineContent, color = null, suffix = "")
 
-            val prefix = regexResult.group(1)
+            val prefix = regexResult.group(1) ?: ""
             val r = regexResult.group(2).toFloat()
             val g = regexResult.group(3).toFloat()
             val b = regexResult.group(4).toFloat()
