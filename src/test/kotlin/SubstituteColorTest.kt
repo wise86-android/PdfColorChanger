@@ -71,4 +71,26 @@ internal class SubstituteColorTest{
 
     }
 
+    @Test
+    fun changeStrokeColor(){
+        val input = "0 0 0 RG"
+        val expected = "1 1 1 RG"
+        val changeRules = mapOf(
+            RgbColor(0.0f,0.0f,0.0f) to RgbColor(1.0f,1.0f,1.0f)
+        )
+        val (out , _) = changeColors(input,changeRules)
+        assertEquals(expected,out)
+    }
+
+    @Test
+    fun changeColorKeepingOtherCommands(){
+        val input = "0 0 0 RG OtherCommands"
+        val expected = "1 1 1 RG OtherCommands"
+        val changeRules = mapOf(
+            RgbColor(0.0f,0.0f,0.0f) to RgbColor(1.0f,1.0f,1.0f)
+        )
+        val (out , _) = changeColors(input,changeRules)
+        assertEquals(expected,out)
+    }
+
 }

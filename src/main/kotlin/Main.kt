@@ -8,12 +8,14 @@ fun changeColors(data:CharSequence, colorMapping:Map<RgbColor,RgbColor>):Substit
     val unknownColors = mutableSetOf<RgbColor>()
     data.lineSequence()
         .forEach {line ->
-            val inColor = line.toRgbColor
+            val pdfLine = PdfContentStreamLine.buildFrom(line)
+            val inColor = pdfLine.getColor()
             if(inColor!=null){
                 foundColors.add(inColor)
                 val outColor = colorMapping[inColor]
                 if(outColor!=null) {
-                    out.append(outColor.toColorLine)
+                    val newLine = pdfLine.changeColor(outColor)
+                    out.append(newLine.toString())
                 }else{
                     unknownColors.add(inColor)
                     out.append(line) // no substitution

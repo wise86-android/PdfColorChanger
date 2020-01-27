@@ -2,7 +2,7 @@ import java.text.DecimalFormat
 import java.util.regex.Pattern
 
 private const val normalizerFloatRegExp = "(1|0.?\\d*)"
-private val colorLineMatcher = Pattern.compile("$normalizerFloatRegExp $normalizerFloatRegExp $normalizerFloatRegExp rg")
+private val colorLineMatcher = Pattern.compile("$normalizerFloatRegExp $normalizerFloatRegExp $normalizerFloatRegExp (rg|RG)")
 
 val CharSequence.isColorLine:Boolean
 get() = colorLineMatcher.matcher(this).matches()
@@ -23,7 +23,7 @@ get() {
 private val floatFormatter = DecimalFormat("#.#####")
 internal val RgbColor.toColorLine: CharSequence
     get(){
-        return String.format("%s %s %s rg",
+        return String.format("%s %s %s",
             floatFormatter.format(red),
             floatFormatter.format(green),
             floatFormatter.format(blue))

@@ -27,6 +27,12 @@ class PdfContentStreamLineTest {
     }
 
     @Test
+    fun redStrokeLineToString() {
+        val actual = PdfContentStreamLine.buildFrom("1 0 0 RG")
+        assertEquals(STROKE_RED_COLOR_LINE, actual)
+    }
+
+    @Test
     fun redColorLineToString() {
         assertEquals("1 0 0 rg", RED_COLOR_LINE.toString())
     }
@@ -95,6 +101,7 @@ class PdfContentStreamLineTest {
     companion object {
         private val RED_COLOR = RgbColor(1f, 0f, 0f)
         private val BLUE_COLOR = RgbColor(0f, 0f, 1f)
+        private val STROKE_RED_COLOR_LINE = PdfContentStreamLine(prefix = "", color = RED_COLOR, suffix = " RG")
         private val RED_COLOR_LINE = PdfContentStreamLine(prefix = "", color = RED_COLOR, suffix = " rg")
         private val BLUE_COLOR_LINE = PdfContentStreamLine(prefix = "", color = BLUE_COLOR, suffix = " rg")
         private val NOT_COLOR_LINE = PdfContentStreamLine(prefix = "not color line", color = null, suffix = "")
