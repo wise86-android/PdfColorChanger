@@ -1,2 +1,2 @@
-rootProject.name = "PdfColor"
+rootProject.name = "PdfColorChanger"
 
