@@ -1,3 +1,5 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+
 plugins {
     java
     application
@@ -6,7 +8,7 @@ plugins {
 }
 
 group = "org.wise86."
-version = "1.0"
+version = "1.0.0"
 
 application{
     mainClassName = "MainKt"
@@ -31,6 +33,12 @@ tasks.withType<Test>().configureEach {
 
 configure<JavaPluginConvention> {
     sourceCompatibility = JavaVersion.VERSION_1_8
+}
+
+tasks.withType<ShadowJar>{
+    archiveFileName.set("${archiveBaseName.get()}_v${archiveVersion.get()}.${archiveExtension.get()}")
+    //generate the jar in the root project dir
+    destinationDirectory.set(projectDir)
 }
 
 tasks {
