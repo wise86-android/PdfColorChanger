@@ -48,7 +48,8 @@ data class RgbColor(val red: Float, var green: Float, val blue: Float) {
     val blueByte: UByte = (blue * 255.0f).roundToInt().toUByte()
 
     override fun toString(): String {
-        return "RgbColor: (red=$redByte,green=$greenByte,blue:$blueByte)/(red:$red,green:$green,blue:$blue)"
+        val hexValue = String.format("%02X%02X%02X",redByte.toByte(),greenByte.toByte(),blueByte.toByte())
+        return "RgbColor: $hexValue (red=$redByte,green=$greenByte,blue:$blueByte)/(red:$red,green:$green,blue:$blue)"
     }
 
     override fun equals(other: Any?): Boolean {
