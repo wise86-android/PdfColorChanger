@@ -105,6 +105,7 @@ fun changeColors(inputDir: File, colorMapping: Map<RgbColor, RgbColor>, outputDi
         outputPath.parent.toFile().mkdirs()
         //write the new file with changed color
         document.save(outputPath.toFile())
+        document.close()
     }
 }
 
