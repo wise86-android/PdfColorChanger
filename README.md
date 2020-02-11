@@ -6,7 +6,9 @@ This program permit you to change the color inside a pdf.
 This is particularly helpful when you have to change colors to iOS icons.  
 The program will scan the input directory searching for all the pdf file and create a new pdf in the output directory with the new colors
 
-# How To Use
+**Note:** The program support also pdf with the CMYK color space, but the output will always use the RGB color space. 
+
+## How To Use
   1. Create a mapping file. This text file is congaing the pair old color/new color.
        the color must be expressed as RGB in hex format, and separated by a space.
        for example to convert red to blue and black to  yellow your file will contains:
