@@ -68,4 +68,12 @@ internal class RgbColorTest {
         assertEquals(color.hashCode(), similarColor.hashCode())
     }
 
+    @Test
+    fun theColorCanBeInitializedWithCMYBValues(){
+        val color = RgbColor(0.37f,0.73f,0.26f,0.8f)
+        assertEquals(32.toUByte(), color.redByte)
+        assertEquals(14.toUByte(), color.greenByte)
+        assertEquals(38.toUByte(), color.blueByte)
+    }
+
 }

@@ -60,6 +60,19 @@ class PdfContentStreamLineTest {
     }
 
     @Test
+    fun buildCMKYMagentaColorLine(){
+        val actual = PdfContentStreamLine.buildFrom("0 1 0 0 k")
+        assertEquals(MAGENTA_COLOR_LINE, actual)
+    }
+
+
+    @Test
+    fun buildCMKYMagentaColorStroke(){
+        val actual = PdfContentStreamLine.buildFrom("0 1 0 0 K")
+        assertEquals(STROKE_MAGENTA_COLOR_LINE, actual)
+    }
+
+    @Test
     fun redStrokeLineToString() {
         val actual = PdfContentStreamLine.buildFrom("1 0 0 RG")
         assertEquals(STROKE_RED_COLOR_LINE, actual)
@@ -90,53 +103,65 @@ class PdfContentStreamLineTest {
     @Test
     fun buildColorLineWithPrefix() {
         val actual = PdfContentStreamLine.buildFrom("prefix 1 0 0 rg")
-        val expected = PdfContentStreamLine(prefix = "prefix ", color = RED_COLOR, suffix = " rg")
+        val expected = PdfContentStreamLine(prefix = "prefix ", color = PDFColor(RED_COLOR,PDFColor.Target.FILL), suffix = "")
         assertEquals(expected, actual)
     }
 
     @Test
-    fun buildMixedColorLine() {
+    fun buildMixedRGBColorLine() {
         val actual = PdfContentStreamLine.buildFrom("mixed 1 0 0 rg line")
 
-        val expected = PdfContentStreamLine(prefix = "mixed ", color = RED_COLOR, suffix = " rg line")
+        val expected = PdfContentStreamLine(prefix = "mixed ", color = PDFColor(RED_COLOR,PDFColor.Target.FILL), suffix = " line")
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun buildMixedCMYKColorLine() {
+        val actual = PdfContentStreamLine.buildFrom("mixed 0 1 0 0 k line")
+
+        val expected = PdfContentStreamLine(prefix = "mixed ", color = PDFColor(MAGENTA_COLOR,PDFColor.Target.FILL), suffix = " line")
         assertEquals(expected, actual)
     }
 
     @Test
     fun changeColorToMixedColorLine() {
-        val line = PdfContentStreamLine(prefix = "mixed ", color = RED_COLOR, suffix = " line")
+        val colorTarget = PDFColor.Target.FILL
+        val line = PdfContentStreamLine(prefix = "mixed ", color = PDFColor(RED_COLOR,colorTarget), suffix = " line")
 
         val actual = line.changeColor(BLUE_COLOR)
 
-        val expected = PdfContentStreamLine(prefix = "mixed ", color = BLUE_COLOR, suffix = " line")
+        val expected = PdfContentStreamLine(prefix = "mixed ", color = PDFColor(BLUE_COLOR,colorTarget), suffix = " line")
         assertEquals(expected, actual)
 
     }
 
     @Test
     fun mixedColorLineToString() {
-        val line = PdfContentStreamLine(prefix = "mixed ", color = RED_COLOR, suffix = " rg line")
+        val line = PdfContentStreamLine(prefix = "mixed ", color = PDFColor(RED_COLOR,PDFColor.Target.FILL), suffix = " line")
         assertEquals("mixed 1 0 0 rg line", line.toString())
     }
 
     @Test
     fun buildColorLineWithDecimals() {
         val actual = PdfContentStreamLine.buildFrom("0.1 0.5 1 rg")
-        assertEquals(PdfContentStreamLine(prefix = "", color = RgbColor(0.1f, 0.5f, 1f), suffix = " rg"), actual)
+        assertEquals(PdfContentStreamLine(prefix = "", color = PDFColor(RgbColor(0.1f, 0.5f, 1f),PDFColor.Target.FILL), suffix = ""), actual)
     }
 
     @Test
     fun lineWithDecimalsToString() {
-        val line = PdfContentStreamLine(prefix = "", color = RgbColor(0.1f, 0.5f, 1f), suffix = " rg")
+        val line = PdfContentStreamLine(prefix = "", color = PDFColor(RgbColor(0.1f, 0.5f, 1f),PDFColor.Target.FILL), suffix = "")
         assertEquals("0.1 0.5 1 rg", line.toString())
     }
 
     companion object {
         private val RED_COLOR = RgbColor(1f, 0f, 0f)
         private val BLUE_COLOR = RgbColor(0f, 0f, 1f)
-        private val STROKE_RED_COLOR_LINE = PdfContentStreamLine(prefix = "", color = RED_COLOR, suffix = " RG")
-        private val RED_COLOR_LINE = PdfContentStreamLine(prefix = "", color = RED_COLOR, suffix = " rg")
-        private val BLUE_COLOR_LINE = PdfContentStreamLine(prefix = "", color = BLUE_COLOR, suffix = " rg")
+        private val MAGENTA_COLOR = RgbColor(1f, 0f, 1f)
+        private val STROKE_RED_COLOR_LINE = PdfContentStreamLine(prefix = "", color = PDFColor(RED_COLOR,PDFColor.Target.STROKE), suffix = "")
+        private val MAGENTA_COLOR_LINE = PdfContentStreamLine(prefix = "", color = PDFColor(MAGENTA_COLOR,PDFColor.Target.FILL), suffix = "")
+        private val STROKE_MAGENTA_COLOR_LINE = PdfContentStreamLine(prefix = "", color = PDFColor(MAGENTA_COLOR,PDFColor.Target.STROKE), suffix = "")
+        private val RED_COLOR_LINE = PdfContentStreamLine(prefix = "", color = PDFColor(RED_COLOR,PDFColor.Target.FILL), suffix = "")
+        private val BLUE_COLOR_LINE = PdfContentStreamLine(prefix = "", color = PDFColor(BLUE_COLOR,PDFColor.Target.FILL), suffix = "")
         private val NOT_COLOR_LINE = PdfContentStreamLine(prefix = "not color line", color = null, suffix = "")
     }
 }

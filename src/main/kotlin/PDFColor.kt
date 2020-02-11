@@ -1,4 +1,4 @@
-import kotlin.math.roundToInt
+import java.text.DecimalFormat
 
 /*
  * Copyright 2020 Giovanni Visentini
@@ -33,50 +33,27 @@ import kotlin.math.roundToInt
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-data class RgbColor(val red: Float, var green: Float, val blue: Float) {
+data class PDFColor(val color: RgbColor,val target: Target){
+    enum class Target{
+        STROKE,
+        FILL,
+    }
 
-    constructor(red: UByte, green: UByte, blue: UByte) :
-            this(red.toFloat() / 255.0f, green.toFloat() / 255.0f, blue.toFloat() / 255.0f)
+    private val Target.pdfNotation: String
+        get() = when(this){
+            Target.STROKE -> "RG"
+            Target.FILL -> "rg"
+        }
 
-    constructor(cyan:Float,magenta:Float,yellow:Float,black:Float):
-        this((1.0f-cyan)*(1.0f-black),(1.0f-magenta)*(1.0f-black),(1.0f-yellow)*(1.0f-black))
-
-    constructor(packet: Int) : this(packet.redComponent, packet.greenComponent, packet.blueComponent)
-
-    val redByte: UByte = (red * 255.0f).roundToInt().toUByte()
-    val greenByte: UByte = (green * 255.0f).roundToInt().toUByte()
-    val blueByte: UByte = (blue * 255.0f).roundToInt().toUByte()
 
     override fun toString(): String {
-        return "RgbColor: (red=$redByte,green=$greenByte,blue:$blueByte)/(red:$red,green:$green,blue:$blue)"
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as RgbColor
-
-        if (redByte != other.redByte) return false
-        if (greenByte != other.greenByte) return false
-        if (blueByte != other.blueByte) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = redByte.hashCode()
-        result = 31 * result + greenByte.hashCode()
-        result = 31 * result + blueByte.hashCode()
-        return result
+        val floatFormatter = DecimalFormat("#.#####")
+        return String.format(
+            "%s %s %s %s",
+            floatFormatter.format(color.red),
+            floatFormatter.format(color.green),
+            floatFormatter.format(color.blue),
+            target.pdfNotation
+        )
     }
 }
-
-private val Int.redComponent: UByte
-    get() = ((this and 0x00FF0000) ushr 16).toUByte()
-
-private val Int.greenComponent: UByte
-    get() = ((this and 0x0000FF00) ushr 8).toUByte()
-
-private val Int.blueComponent: UByte
-    get() = (this and 0x000000FF).toUByte()

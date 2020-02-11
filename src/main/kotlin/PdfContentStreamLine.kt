@@ -36,51 +36,79 @@ import java.util.regex.Pattern
 
 data class PdfContentStreamLine internal constructor(
     private val prefix: String,
-    private val color: RgbColor?,
+    private val color: PDFColor?,
     private val suffix: String
 ) {
 
     companion object {
-        fun buildFrom(rawLineContent: String): PdfContentStreamLine {
-            val floatMatch = "0\\.\\d+|0|1|1\\.0"
-            val colorLineMatcher = Pattern.compile("^(.*?\\s)?($floatMatch)\\s($floatMatch)\\s($floatMatch)(\\s[rg|RG].*)")
-            val regexResult = colorLineMatcher.matcher(rawLineContent)
+        private const val FLOAT_MATCH = "0\\.\\d+|0|1|1\\.0"
+        private val RGB_COLOR_LINE_MATCHER= Pattern.compile("^(.*?\\s)?($FLOAT_MATCH)\\s($FLOAT_MATCH)\\s($FLOAT_MATCH)\\s(rg|RG)(.*)")
+        private val CMKY_COLOR_LINE_MATCHER= Pattern.compile("^(.*?\\s)?($FLOAT_MATCH)\\s($FLOAT_MATCH)\\s($FLOAT_MATCH)\\s($FLOAT_MATCH)\\s([kK])(.*)")
+
+        private fun buildRGBColorLine(rawLineContent:String):PdfContentStreamLine?{
+            val regexResult = RGB_COLOR_LINE_MATCHER.matcher(rawLineContent)
             if (!regexResult.find())
-                return PdfContentStreamLine(prefix = rawLineContent, color = null, suffix = "")
+                return null
 
             val prefix = regexResult.group(1) ?: ""
             val r = regexResult.group(2).toFloat()
             val g = regexResult.group(3).toFloat()
             val b = regexResult.group(4).toFloat()
-            val suffix = regexResult.group(5)
+            val colorTaget = if(regexResult.group(5) == "RG"){
+                PDFColor.Target.STROKE
+            }else{
+                PDFColor.Target.FILL
+            }
+            val suffix = regexResult.group(6)
             val color = RgbColor(r, g, b)
-            return PdfContentStreamLine(prefix, color, suffix)
+            return PdfContentStreamLine(prefix, PDFColor(color,colorTaget), suffix)
+        }
+
+        private fun buildCMYKColorLine(rawLineContent: String): PdfContentStreamLine? {
+            val regexResult = CMKY_COLOR_LINE_MATCHER.matcher(rawLineContent)
+            if (!regexResult.find())
+                return null
+
+            val prefix = regexResult.group(1) ?: ""
+            val c = regexResult.group(2).toFloat()
+            val m = regexResult.group(3).toFloat()
+            val y = regexResult.group(4).toFloat()
+            val b = regexResult.group(5).toFloat()
+            val colorTaget = if(regexResult.group(6) == "K"){
+                PDFColor.Target.STROKE
+            }else{
+                PDFColor.Target.FILL
+            }
+            val suffix = regexResult.group(7)
+            val color = RgbColor(c,m,y, b)
+            return PdfContentStreamLine(prefix, PDFColor(color,colorTaget), suffix)
+        }
+
+        fun buildFrom(rawLineContent: String): PdfContentStreamLine {
+            val rgbLine = buildRGBColorLine(rawLineContent)
+            if(rgbLine !=null)
+                return rgbLine
+            val cmykLine = buildCMYKColorLine(rawLineContent)
+            if(cmykLine !=null)
+                return cmykLine
+            return PdfContentStreamLine(rawLineContent,null,"")
         }
     }
 
     fun getColor(): RgbColor? {
-        return this.color
+        return this.color?.color
     }
 
     fun changeColor(newColor: RgbColor): PdfContentStreamLine {
         if (this.color == null)
             return this.copy()
 
-        return this.copy(color = newColor)
+        return this.copy(color = color.copy(color=newColor))
     }
 
     override fun toString(): String {
-        val colorToString = color?.let {
-            val floatFormatter = DecimalFormat("#.#####")
-            String.format(
-                "%s %s %s",
-                floatFormatter.format(it.red),
-                floatFormatter.format(it.green),
-                floatFormatter.format(it.blue)
-            )
-        } ?: ""
+        val colorToString = color?.toString() ?: ""
         return prefix + colorToString + suffix
-
     }
 
 }
