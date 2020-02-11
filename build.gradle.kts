@@ -8,7 +8,6 @@ plugins {
 }
 
 group = "org.wise86."
-version = "1.0.0"
 
 application{
     mainClassName = "MainKt"

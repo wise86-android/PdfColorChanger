@@ -19,7 +19,7 @@ The program will scan the input directory searching for all the pdf file and cre
        
   2. run the program with:
         ```
-            java -jar PdfColorChanger_v1.0.0.jar inputDir mappingFile outDir
+            java -jar PdfColorChanger_v1.1.0.jar inputDir mappingFile outDir
         ```
      **Note:** the output dir must be already present
      
